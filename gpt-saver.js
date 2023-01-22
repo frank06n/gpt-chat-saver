@@ -11,20 +11,28 @@ function download(filename, text) {
   document.body.removeChild(element);
 }
 
-const elem = document.querySelector('.text-sm').cloneNode(true);
-for (let c of elem.querySelectorAll('button'))
+(async () => {
+  console.log('[Gpt Saver] starting...')
+  console.log('[Gpt Saver] cloning chat...')
+  const elem = document.querySelector('.text-sm').cloneNode(true);
+  for (let c of elem.querySelectorAll('button'))
     c.parentElement.removeChild(c)
 
-const mpage = [];
-mpage.push(
+  console.log('[Gpt Saver] fetching css...')
+  const response = await fetch('https://raw.githubusercontent.com/frank06n/gpt-chat-saver/main/style.css');
+  const css = await response.text();
+
+  console.log('[Gpt Saver] creating file...')
+  const mpage = [];
+  mpage.push(
     '<html>',
     '<head>',
-    '<title>'+document.title+'</title>',
-    '<link rel="stylesheet" href="https://chat.openai.com/_next/static/css/05101231d7a7253c.css"/>',
+    '<title>' + document.title + '</title>',
+    '<style>', css, '</style>',
     '</head>',
-    '<body>',
-    elem.outerHTML,
-    '</body>',
+    '<body>', elem.outerHTML, '</body>',
     '</html>');
 
-download('gpt3_save - '+document.title+'.html', mpage.join('\n'));
+  console.log('[Gpt Saver] downloading...')
+  download('gpt3_save - ' + document.title + '.html', mpage.join('\n'));
+})();
